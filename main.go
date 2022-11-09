@@ -2,14 +2,24 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"net"
+	"net/rpc"
+	"net/rpc/jsonrpc"
 	"os"
 
 	"github.com/rs/zerolog"
 	"github.com/xremming/mousetoria/db"
 	"github.com/xremming/mousetoria/ledger"
-	"github.com/xremming/mousetoria/timestamp"
 )
+
+type Database struct{ db.Database }
+
+func (d *Database) InsertTransaction(tx ledger.Transaction, value *int64) (err error) {
+	*value, err = d.Database.InsertTransaction(context.TODO(), tx)
+	log.Printf("InsertTransaction(%v) = %v", tx, *value)
+	return
+}
 
 func main() {
 	logger := zerolog.New(os.Stderr)
@@ -26,40 +36,24 @@ func main() {
 		}
 	}()
 
-	tx, err := ledger.BuildTx().
-		WithTimestamp(1, timestamp.Morning).
-		// getting revenue worth 100, and paying 30% taxes from it
-		WithDebit(ledger.AssetsCash, 70).
-		WithDebit(ledger.ExpensesTaxes, 30).
-		WithCredit(ledger.RevenuesUnknown, 100).
-		// taxman gets money
-		WithDebit(ledger.AssetsCash, 30).
-		WithCredit(ledger.RevenuesUnknown, 30).
-		Build()
-
+	addr, err := net.ResolveUnixAddr("unix", "/tmp/mousetoria.sock")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	txID, err := db.InsertTransaction(ctx, tx)
+	inbound, err := net.ListenUnix("unix", addr)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	fmt.Printf("%v - %v\n", txID, tx)
+	listener := Database{db}
+	rpc.Register(&listener)
 
-	tx, err = db.GetTransaction(ctx, txID)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%v - %v\n", txID, tx)
-
-	t := timestamp.Epoch()
-	for i := 0; i < 20_00_000; i++ {
-		if t.IsLeapYear() {
-			fmt.Printf("%v\t%v\n", t, t.IsLeapYear())
+	for {
+		conn, err := inbound.Accept()
+		if err != nil {
+			continue
 		}
-		t = t.Next()
+		go jsonrpc.ServeConn(conn)
 	}
 }
