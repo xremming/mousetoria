@@ -7,13 +7,8 @@ import (
 
 type Timestamp int
 
-// Epoch is the smallest valid timestamp.
-func Epoch() Timestamp {
-	return Timestamp(1)
-}
-
-// NewTimestamp creates a new timestamp from a given day and time of day, its
-// output is undefined when the day or time of day is invalid.
+// New creates a new timestamp from a given day and time of day, its
+// output is undefined when time of day is invalid.
 func New(day int, timeOfDay TimeOfDay) Timestamp {
 	return Timestamp(day*4 + int(timeOfDay))
 }
@@ -56,6 +51,11 @@ func (t Timestamp) Weekday() Weekday {
 	sec := (int(t) + int(Monday)*secondsPerDay) % secondsPerWeek
 	return Weekday(int(sec) / secondsPerDay)
 }
+
+// func (t Timestamp) Split() (day uint, timeOfDay TimeOfDay) {
+// 	day, timeOfDay = bits.Div(0, uint(t), 4)
+// 	return
+// }
 
 func (t Timestamp) TimeOfDay() TimeOfDay {
 	return TimeOfDay(t % 4)

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "github.com/xremming/mousetoria/service";
+
+import "timestamp.proto";
+
+enum AccountGroup {
+	INVALID = 0;
+	ASSETS = 1;
+	LIABILITIES = 2;
+	EQUITY = 3;
+	REVENUE = 4;
+	EXPENSES = 5;
+}
+
+message AccountNumber {
+	AccountGroup group = 1;
+	sint32 number = 2;
+}
+
+message Record {
+	AccountNumber account_number = 1;
+	sint32 value = 2;
+}
+
+message Transaction {
+	Timestamp timestamp = 1;
+	optional string comment = 2;
+	repeated Record records_debit = 3;
+	repeated Record records_credit = 4;
+}

@@ -2,58 +2,61 @@ package main
 
 import (
 	"context"
-	"log"
 	"net"
-	"net/rpc"
-	"net/rpc/jsonrpc"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/rs/zerolog"
-	"github.com/xremming/mousetoria/db"
-	"github.com/xremming/mousetoria/ledger"
+	"github.com/xremming/mousetoria/service/database"
+	"google.golang.org/grpc"
 )
-
-type Database struct{ db.Database }
-
-func (d *Database) InsertTransaction(tx ledger.Transaction, value *int64) (err error) {
-	*value, err = d.Database.InsertTransaction(context.TODO(), tx)
-	log.Printf("InsertTransaction(%v) = %v", tx, *value)
-	return
-}
 
 func main() {
 	logger := zerolog.New(os.Stderr)
+
+	if len(os.Args) != 2 {
+		logger.Fatal().Msg("Usage: mousetoria <grpc-socket-path>")
+	}
+
 	ctx := logger.WithContext(context.Background())
 
-	db, err := db.NewDatabase(ctx, "file::memory:")
+	db, err := database.NewDatabase(ctx, "file::memory:")
 	if err != nil {
 		panic(err)
 	}
 	defer func() {
 		err := db.Close()
 		if err != nil {
-			panic(err)
+			logger.Err(err).Msg("failed to close db connection")
 		}
 	}()
 
-	addr, err := net.ResolveUnixAddr("unix", "/tmp/mousetoria.sock")
+	server := grpc.NewServer()
+	database.RegisterDatabaseServer(server, db)
+
+	addr, err := net.ResolveUnixAddr("unix", os.Args[1])
 	if err != nil {
-		log.Fatal(err)
+		logger.Err(err).Msg("failed to resolve unix addr")
 	}
 
-	inbound, err := net.ListenUnix("unix", addr)
+	conn, err := net.ListenUnix("unix", addr)
 	if err != nil {
-		log.Fatal(err)
+		logger.Err(err).Msg("failed to listen unix address")
 	}
+	conn.SetUnlinkOnClose(true)
 
-	listener := Database{db}
-	rpc.Register(&listener)
-
-	for {
-		conn, err := inbound.Accept()
+	go func() {
+		err = server.Serve(conn)
 		if err != nil {
-			continue
+			logger.Err(err).Msg("failed to serve connections")
 		}
-		go jsonrpc.ServeConn(conn)
-	}
+	}()
+
+	exit := make(chan os.Signal, 1)
+	signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM)
+
+	<-exit
+	logger.Info().Msg("exiting")
+	server.GracefulStop()
 }

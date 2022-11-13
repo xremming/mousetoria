@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -8,8 +8,7 @@ import (
 	"github.com/xremming/mousetoria/ledger"
 )
 
-//go:embed sql/upsert_account.sql
-var upsertAccountSQL string
+const upsertAccountSQL = `INSERT OR REPLACE INTO "account" ("accountGroup", "accountID", "name") VALUES (?, ?, ?)`
 
 func (db Database) upsertAllAccounts(ctx context.Context) error {
 	zerolog.Ctx(ctx).Info().Msg("upserting all accounts and account names")

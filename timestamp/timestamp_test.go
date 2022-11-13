@@ -8,7 +8,7 @@ import (
 )
 
 func TestTimestampYear4IsLeapYear(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		if year == 4 {
@@ -21,8 +21,9 @@ func TestTimestampYear4IsLeapYear(t *testing.T) {
 		ts = ts.Next()
 	}
 }
+
 func TestTimestampYear100IsNotLeapYear(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		if year == 100 {
@@ -35,8 +36,9 @@ func TestTimestampYear100IsNotLeapYear(t *testing.T) {
 		ts = ts.Next()
 	}
 }
+
 func TestTimestampYear400IsLeapYear(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		if year == 400 {
@@ -48,8 +50,9 @@ func TestTimestampYear400IsLeapYear(t *testing.T) {
 		ts = ts.Next()
 	}
 }
+
 func TestTimestampYear1000IsNotLeapYear(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		if year == 1000 {
@@ -63,7 +66,7 @@ func TestTimestampYear1000IsNotLeapYear(t *testing.T) {
 }
 
 func TestLeapYearFebruaryHas29Days(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year, month, day := ts.Date()
 		if year == 4 && month == timestamp.February {
@@ -77,7 +80,7 @@ func TestLeapYearFebruaryHas29Days(t *testing.T) {
 }
 
 func TestLeapYearHasAtMost366Days(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		yday := ts.YearDay()
@@ -92,7 +95,7 @@ func TestLeapYearHasAtMost366Days(t *testing.T) {
 }
 
 func TestNormalYearHasAtMost365Days(t *testing.T) {
-	ts := timestamp.Epoch()
+	var ts timestamp.Timestamp
 	for {
 		year := ts.Year()
 		yday := ts.YearDay()

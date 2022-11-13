@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -11,6 +11,7 @@ import (
 )
 
 type Database struct {
+	UnimplementedDatabaseServer
 	db *sql.DB
 }
 
@@ -37,7 +38,7 @@ func NewDatabase(ctx context.Context, dataSourceName string) (Database, error) {
 		return err
 	}
 
-	out := Database{db}
+	out := Database{db: db}
 
 	err = out.runMigrations(ctx)
 	if err != nil {
@@ -51,7 +52,7 @@ func NewDatabase(ctx context.Context, dataSourceName string) (Database, error) {
 		return Database{}, closeDB(err)
 	}
 
-	return Database{db}, nil
+	return out, nil
 }
 
 func (db Database) Close() error {
