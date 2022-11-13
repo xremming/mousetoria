@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "strict": true,
+        "sourceMap": true,
+        "outDir": "../dist",
+        "paths": {
+            "*": ["./node_modules/*"]
+        }
+    },
+    "include": ["**/*.ts"]
+}

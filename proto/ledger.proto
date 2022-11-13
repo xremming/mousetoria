@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/xremming/mousetoria/service";
+option go_package = "github.com/xremming/mousetoria/proto";
 
 import "timestamp.proto";
 
@@ -9,7 +9,7 @@ enum AccountGroup {
 	ASSETS = 1;
 	LIABILITIES = 2;
 	EQUITY = 3;
-	REVENUE = 4;
+	REVENUES = 4;
 	EXPENSES = 5;
 }
 

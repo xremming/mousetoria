@@ -3,8 +3,9 @@ package timestamp_test
 import (
 	"testing"
 
+	"gameserver/timestamp"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/xremming/mousetoria/timestamp"
 )
 
 func TestTimestampYear4IsLeapYear(t *testing.T) {

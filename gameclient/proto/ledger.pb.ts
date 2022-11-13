@@ -9,7 +9,7 @@ export enum AccountGroup {
   ASSETS = 1,
   LIABILITIES = 2,
   EQUITY = 3,
-  REVENUE = 4,
+  REVENUES = 4,
   EXPENSES = 5,
   UNRECOGNIZED = -1,
 }
@@ -29,8 +29,8 @@ export function accountGroupFromJSON(object: any): AccountGroup {
     case "EQUITY":
       return AccountGroup.EQUITY;
     case 4:
-    case "REVENUE":
-      return AccountGroup.REVENUE;
+    case "REVENUES":
+      return AccountGroup.REVENUES;
     case 5:
     case "EXPENSES":
       return AccountGroup.EXPENSES;
@@ -51,8 +51,8 @@ export function accountGroupToJSON(object: AccountGroup): string {
       return "LIABILITIES";
     case AccountGroup.EQUITY:
       return "EQUITY";
-    case AccountGroup.REVENUE:
-      return "REVENUE";
+    case AccountGroup.REVENUES:
+      return "REVENUES";
     case AccountGroup.EXPENSES:
       return "EXPENSES";
     case AccountGroup.UNRECOGNIZED:

@@ -1,4 +1,4 @@
-module github.com/xremming/mousetoria
+module gameserver
 
 go 1.19
 

@@ -7,8 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"gameserver/database"
+	"gameserver/proto"
+
 	"github.com/rs/zerolog"
-	"github.com/xremming/mousetoria/service/database"
 	"google.golang.org/grpc"
 )
 
@@ -33,7 +35,7 @@ func main() {
 	}()
 
 	server := grpc.NewServer()
-	database.RegisterDatabaseServer(server, db)
+	proto.RegisterDatabaseServer(server, db)
 
 	addr, err := net.ResolveUnixAddr("unix", os.Args[1])
 	if err != nil {

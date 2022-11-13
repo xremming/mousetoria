@@ -5,7 +5,6 @@ import (
 	_ "embed"
 
 	"github.com/rs/zerolog"
-	"github.com/xremming/mousetoria/ledger"
 )
 
 const upsertAccountSQL = `INSERT OR REPLACE INTO "account" ("accountGroup", "accountID", "name") VALUES (?, ?, ?)`
@@ -18,10 +17,12 @@ func (db Database) upsertAllAccounts(ctx context.Context) error {
 		return err
 	}
 
-	for account, name := range ledger.AccountNames() {
-		_, err = stmt.ExecContext(ctx, account.AccountGroup, account.AccountID, name)
-		if err != nil {
-			return err
+	for accountGroup, accounts := range accounts {
+		for accountID, name := range accounts {
+			_, err = stmt.ExecContext(ctx, accountGroup, accountID, name)
+			if err != nil {
+				return err
+			}
 		}
 	}
 

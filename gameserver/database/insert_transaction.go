@@ -3,21 +3,20 @@ package database
 import (
 	"context"
 	"database/sql"
-
-	service "github.com/xremming/mousetoria/service"
+	"gameserver/proto"
 )
 
 const (
-	insertTransaction = `INSERT INTO "transaction" ("timestamp", "comment") VALUES (?, ?)`
-	insertDebit       = `INSERT INTO "ledger" ("transactionID", "accountGroup", "accountID", "debit") VALUES (?, ?, ?, ?)`
-	insertCredit      = `INSERT INTO "ledger" ("transactionID", "accountGroup", "accountID", "credit") VALUES (?, ?, ?, ?)`
+	insertTransactionSQL = `INSERT INTO "transaction" ("timestamp", "comment") VALUES (?, ?)`
+	insertDebitSQL       = `INSERT INTO "ledger" ("transactionID", "accountGroup", "accountID", "debit") VALUES (?, ?, ?, ?)`
+	insertCreditSQL      = `INSERT INTO "ledger" ("transactionID", "accountGroup", "accountID", "credit") VALUES (?, ?, ?, ?)`
 )
 
-func (db Database) InsertTransaction(ctx context.Context, transaction *service.Transaction) (*InsertTransactionResponse, error) {
-	return withTransaction(ctx, db.db, func(ctx context.Context, tx *sql.Tx) (*InsertTransactionResponse, error) {
+func (db Database) InsertTransaction(ctx context.Context, transaction *proto.Transaction) (*proto.InsertTransactionResponse, error) {
+	return withTransaction(ctx, db.db, func(ctx context.Context, tx *sql.Tx) (*proto.InsertTransactionResponse, error) {
 		res, err := tx.ExecContext(
 			ctx,
-			insertTransaction,
+			insertTransactionSQL,
 			transaction.GetTimestamp().GetDay(),
 			transaction.GetTimestamp().GetTimeOfDay(),
 			transaction.GetComment(),
@@ -31,7 +30,7 @@ func (db Database) InsertTransaction(ctx context.Context, transaction *service.T
 			return nil, err
 		}
 
-		stmtDebit, err := tx.PrepareContext(ctx, insertDebit)
+		stmtDebit, err := tx.PrepareContext(ctx, insertDebitSQL)
 		if err != nil {
 			return nil, err
 		}
@@ -50,7 +49,7 @@ func (db Database) InsertTransaction(ctx context.Context, transaction *service.T
 			}
 		}
 
-		stmtCredit, err := tx.PrepareContext(ctx, insertCredit)
+		stmtCredit, err := tx.PrepareContext(ctx, insertCreditSQL)
 		if err != nil {
 			return nil, err
 		}
@@ -69,6 +68,6 @@ func (db Database) InsertTransaction(ctx context.Context, transaction *service.T
 			}
 		}
 
-		return &InsertTransactionResponse{TransactionId: transactionID}, nil
+		return &proto.InsertTransactionResponse{TransactionId: transactionID}, nil
 	})
 }

@@ -5,13 +5,15 @@ import (
 	"database/sql"
 	_ "embed"
 
+	"gameserver/proto"
+
 	"github.com/hashicorp/go-multierror"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/zerolog"
 )
 
 type Database struct {
-	UnimplementedDatabaseServer
+	proto.UnimplementedDatabaseServer
 	db *sql.DB
 }
 

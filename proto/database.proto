@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/xremming/mousetoria/service/database";
+option go_package = "github.com/xremming/mousetoria/proto";
 
 import "ledger.proto";
 
@@ -8,6 +8,16 @@ message InsertTransactionResponse {
 	int64 transaction_id = 1;
 }
 
+message GetTransactionRequest {
+	int64 transactionId = 1;
+}
+
+message GetAllTransactionsRequest {
+	optional int64 limit = 1;
+}
+
 service Database {
 	rpc InsertTransaction(Transaction) returns (InsertTransactionResponse);
+	rpc GetTransaction(GetTransactionRequest) returns (Transaction);
+	rpc GetAllTransactions(GetAllTransactionsRequest) returns (stream Transaction);
 }

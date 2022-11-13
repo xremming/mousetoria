@@ -20,6 +20,38 @@
       <span id="chrome-version"></span>, and Electron
       <span id="electron-version"></span>.
     </p>
-    <button onclick="api.newWindow()">Click Me!</button>
+    <button id="btn">Click Me!</button>
   </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("btn").addEventListener("click", () => {
+        window.api
+          .insertTransaction({
+            timestamp: { day: 0, timeOfDay: 0 },
+            comment: "test",
+            recordsDebit: [
+              {
+                accountNumber: {
+                  group: 1,
+                  number: 1,
+                },
+                value: 100,
+              },
+            ],
+            recordsCredit: [
+              {
+                accountNumber: {
+                  group: 4,
+                  number: 1,
+                },
+                value: 100,
+              },
+            ],
+          })
+          .then(console.log)
+          .catch(console.error);
+      });
+    });
+  </script>
 </html>

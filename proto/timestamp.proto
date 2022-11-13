@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/xremming/mousetoria/service";
+option go_package = "github.com/xremming/mousetoria/proto";
 
 enum TimeOfDay {
 	// Night is the time between 00:00 and 05:59
