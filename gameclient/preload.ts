@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge } from "electron";
 import { DatabaseClient } from "./proto/database.pb";
 import { startServer } from "./server";
 
@@ -18,5 +18,9 @@ window.addEventListener("DOMContentLoaded", () => {
 startServer().then(([client, stopServer]: [DatabaseClient, () => void]) => {
   contextBridge.exposeInMainWorld("api", {
     insertTransaction: promisify(client.insertTransaction).bind(client),
+  });
+
+  window.addEventListener("beforeunload", () => {
+    stopServer();
   });
 });
