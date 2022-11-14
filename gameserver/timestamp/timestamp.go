@@ -3,6 +3,7 @@ package timestamp
 import (
 	"errors"
 	"fmt"
+	"gameserver/proto"
 )
 
 type Timestamp int
@@ -11,6 +12,10 @@ type Timestamp int
 // output is undefined when time of day is invalid.
 func New(day int, timeOfDay TimeOfDay) Timestamp {
 	return Timestamp(day*4 + int(timeOfDay))
+}
+
+func FromProto(ts *proto.Timestamp) Timestamp {
+	return New(int(ts.GetDay()), TimeOfDay(ts.GetTimeOfDay()))
 }
 
 func (t Timestamp) Next() Timestamp {
@@ -51,11 +56,6 @@ func (t Timestamp) Weekday() Weekday {
 	sec := (int(t) + int(Monday)*secondsPerDay) % secondsPerWeek
 	return Weekday(int(sec) / secondsPerDay)
 }
-
-// func (t Timestamp) Split() (day uint, timeOfDay TimeOfDay) {
-// 	day, timeOfDay = bits.Div(0, uint(t), 4)
-// 	return
-// }
 
 func (t Timestamp) TimeOfDay() TimeOfDay {
 	return TimeOfDay(t % 4)
