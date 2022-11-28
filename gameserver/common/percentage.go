@@ -26,9 +26,20 @@ func (p Percentage) Add(other Percentage) Percentage {
 	return Percentage(1 - (1-p.Norm())*(1-other.Norm()))
 }
 
+func (p Percentage) Sub(other Percentage) Percentage {
+	a := p.Norm()
+	b := other.Norm()
+
+	return Percentage((b - a) / (b - 1))
+}
+
 func (p Percentage) Validate() error {
-	if math.IsNaN(float64(p)) || math.IsInf(float64(p), 0) {
-		return fmt.Errorf("preference must not be NaN or Inf")
+	if math.IsNaN(float64(p)) {
+		return fmt.Errorf("percentage must not be NaN")
+	}
+
+	if math.IsInf(float64(p), 0) {
+		return fmt.Errorf("preference must not be Inf")
 	}
 
 	if p < 0 || p > 1 {
