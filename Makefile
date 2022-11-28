@@ -8,13 +8,18 @@ start: all
 	@echo "Starting the server..."
 	$(NODE_MODULES_BIN)/electron --no-sandbox ./dist/main.js
 
+.PHONY: deps
+deps:
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
 .PHONY: clean
 clean:
 	rm -rf dist/*
 
 .PHONY: gameclient
 gameclient: protoc
-	npm exec -- tsc -p gameclient/tsconfig.json
+	$(NODE_MODULES_BIN)/tsc -p gameclient/tsconfig.json
 
 .PHONY: gameserver
 gameserver: protoc
