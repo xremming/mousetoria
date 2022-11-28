@@ -2,13 +2,15 @@
     "private": true,
     "dependencies": {
         "easy-peasy": "^5.1.0",
+        "gameclient": "file:../gameclient",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "gameclient": "file:../gameclient"
+        "react-router-dom": "^6.4.3"
     },
     "devDependencies": {
         "@types/react": "^18.0.25",
         "@types/react-dom": "^18.0.9",
+        "@types/react-router-dom": "^5.3.3",
         "parcel": "^2.8.0"
     }
 }
