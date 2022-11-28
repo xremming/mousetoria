@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "dependencies": {
+        "easy-peasy": "^5.1.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "gameclient": "file:../gameclient"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.25",
+        "@types/react-dom": "^18.0.9",
+        "parcel": "^2.8.0"
+    }
+}

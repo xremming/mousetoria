@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "devDependencies": {
+        "ts-proto": "^1.131.2",
+        "electron": "^21.2.3"
+    },
+    "dependencies": {
+        "@grpc/grpc-js": "^1.7.3"
+    }
+}

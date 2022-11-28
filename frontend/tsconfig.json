@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "lib": ["DOM", "ES2022"],
+        "esModuleInterop": true,
+        "strict": true,
+        "jsx": "react-jsx",
+        "typeRoots": ["node_modules/@types", "node_modules/gameclient/types"]
+    },
+    "include": ["**/*.ts", "**/*.tsx"]
+}

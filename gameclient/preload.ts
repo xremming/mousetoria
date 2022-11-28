@@ -1,8 +1,9 @@
 import { contextBridge } from "electron";
-import { DatabaseClient } from "./proto/database.pb";
+import { DatabaseClient, InsertTransactionResponse } from "./proto/database.pb";
 import { startServer } from "./server";
 
 import { promisify } from "node:util";
+import { Transaction } from "./proto/ledger.pb";
 
 window.addEventListener("DOMContentLoaded", () => {
   const replaceText = (selector: string, text: string) => {
@@ -15,10 +16,16 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+const createApi = (client: DatabaseClient) => ({
+  insertTransaction: promisify<Transaction, InsertTransactionResponse>(
+    client.insertTransaction
+  ).bind(client),
+});
+
+export type Api = ReturnType<typeof createApi>;
+
 startServer().then(([client, stopServer]: [DatabaseClient, () => void]) => {
-  contextBridge.exposeInMainWorld("api", {
-    insertTransaction: promisify(client.insertTransaction).bind(client),
-  });
+  contextBridge.exposeInMainWorld("api", createApi(client));
 
   window.addEventListener("beforeunload", () => {
     stopServer();

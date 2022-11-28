@@ -15,7 +15,8 @@ function createWindow() {
     },
   });
 
-  win.loadFile("../index.html");
+  win.loadURL("http://localhost:1234");
+  // win.loadFile("../index.html");
   win.on("ready-to-show", () => win.show());
 }
 
