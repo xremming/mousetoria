@@ -53,3 +53,21 @@ CREATE INDEX "ledger_transactionID"
 	ON "ledger" ("transactionID");
 CREATE INDEX "ledger_accountGroup_accountID"
 	ON "ledger" ("accountGroup", "accountID");
+
+CREATE TABLE "node" (
+    "nodeId" INTEGER NOT NULL,
+    PRIMARY KEY ("nodeId")
+);
+
+CREATE TABLE "edge" (
+    "from" INTEGER NOT NULL,
+    "to"   INTEGER NOT NULL,
+    FOREIGN KEY ("from") REFERENCES "node" ("nodeId"),
+    FOREIGN KEY ("to")   REFERENCES "node" ("nodeId"),
+    CONSTRAINT "from_to_unique"
+        UNIQUE ("from", "to"),
+    CONSTRAINT "from_to_not_equal"
+        CHECK ("from" != "to"),
+    CONSTRAINT "from_to_ordered"
+        CHECK ("from" < "to")
+);
