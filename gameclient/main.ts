@@ -4,8 +4,8 @@ import { app, BrowserWindow, ipcMain } from "electron";
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1080,
+    height: 720,
     webPreferences: {
       // based on docs, the nodeIntegration should not be needed in this case
       // but the code will not work without it nor can I see any reason why it should not be enabled

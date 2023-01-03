@@ -17,6 +17,10 @@ deps:
 clean:
 	rm -rf dist/*
 
+.PHONY: dev-frontend
+dev-frontend:
+	$(NODE_MODULES_BIN)/parcel frontend/index.html
+
 .PHONY: gameclient
 gameclient: protoc
 	$(NODE_MODULES_BIN)/tsc -p gameclient/tsconfig.json
